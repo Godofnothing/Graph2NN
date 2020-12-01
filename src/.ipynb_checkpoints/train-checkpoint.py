@@ -1,4 +1,6 @@
 import torch
+import os
+import numpy as np
 
 from utils import net, metrics
 
@@ -47,7 +49,7 @@ def train_epoch(train_loader, model, loss_fn, optimizer, scheduler = None, log =
         return avg_loss, avg_top1_err, avg_top5_err
             
 @torch.no_grad()
-def eval_epoch(test_loader, model, cfg, return_metrics = False):
+def eval_epoch(test_loader, model, cfg, log = False, return_metrics = False):
     """Evaluates the model on the test set."""
 
     # Enable eval mode
@@ -70,15 +72,20 @@ def eval_epoch(test_loader, model, cfg, return_metrics = False):
     # Log stats
     avg_top1_err /= (cur_iter + 1)
     avg_top5_err /= (cur_iter + 1)
-    print(f"Test\ntop1_err : {avg_top1_err}\ntop5_err : {avg_top5_err}\n---\n")
+    if log:
+        print(f"Test\ntop1_err : {avg_top1_err}\ntop5_err : {avg_top5_err}\n---\n")
         
     # Log epoch stats
     # test_meter.log_epoch_stats(cur_epoch,writer_eval,params,flops)
     if cfg["RGRAPH"]["SAVE_GRAPH"]:
         adj_dict = net.model2adj(model)
-        adj_dict = {**adj_dict, 'top1_err': stats['top1_err']}
-        os.makedirs('{}/graphs/{}'.format(cfg["OUT_DIR"], cfg["RGRAPH"]["SEED_TRAIN"]), exist_ok=True)
-        np.savez('{}/graphs/{}/{}.npz'.format(cfg["OUT_DIR"], cfg["RGRAPH"]["SEED_TRAIN"], cur_epoch), **adj_dict)
+        
+        out_dir = f"{cfg['OUT_DIR']}/{cfg['MODEL']['TYPE']}/{cfg['TRAIN']['DATASET']}/graphs"
+        rgraph = cfg["RGRAPH"]
+        graph_name = f"gsparsity={rgraph['SPARSITY']}_p={rgraph['P']}_gseed={rgraph['SEED_GRAPH']}.npz"
+        
+        os.makedirs(f"{out_dir}", exist_ok=True)
+        np.savez(f"{out_dir}/{graph_name}", **adj_dict)
         
     if return_metrics:
         return avg_top1_err, avg_top5_err
@@ -112,7 +119,7 @@ def run_training_procedure(
             
             if evaluate_on_test:
                 assert test_loader != None
-                test_metrics = eval_epoch(test_loader, model, cfg, return_metrics_on_epoch)
+                test_metrics = eval_epoch(test_loader, model, cfg, log, return_metrics_on_epoch)
                 test_acc1.append(test_metrics[0])
                 test_acc5.append(test_metrics[1])
                 

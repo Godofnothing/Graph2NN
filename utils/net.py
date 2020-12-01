@@ -81,8 +81,9 @@ def model2adj(model):
     adj_dict = {}
     i = 0
     for n, m in model.named_modules():
-        if isinstance(m, nn.Linear) or isinstance(m, nn.Conv2d):
+        if isinstance(m, TalkLinear) or isinstance(m, TalkConv2d):
             adj_dict['weight_{}'.format(i)] = m.weight.data.squeeze().cpu().numpy()
+            adj_dict['mask_{}'.format(i)] = m.mask.data.squeeze().cpu().numpy()
             i += 1
         elif isinstance(m, SymLinear):
             weight = m.weight.data + m.weight.data.permute(1, 0)
@@ -92,8 +93,7 @@ def model2adj(model):
             weight = m.weight.data + m.weight.data.permute(1, 0, 2, 3)
             adj_dict['weight_{}'.format(i)] = weight.squeeze().cpu().numpy()
             i += 1
-        elif isinstance(m, TalkLinear) or isinstance(m, TalkConv2d):
+        elif isinstance(m, nn.Linear) or isinstance(m, nn.Conv2d):
             adj_dict['weight_{}'.format(i)] = m.weight.data.squeeze().cpu().numpy()
-            adj_dict['mask_{}'.format(i)] = m.mask.data.squeeze().cpu().numpy()
             i += 1
     return adj_dict

@@ -198,7 +198,7 @@ class CNN(nn.Module):
     def __init__(self, cfg):
         assert cfg["TRAIN"]["DATASET"] == cfg["TEST"]["DATASET"], \
             'Train and test dataset must be the same for now'
-        assert cfg["TRAIN"]["DATASET"] in ['cifar10', 'MNIST'], \
+        assert cfg["TRAIN"]["DATASET"] in ['cifar10', 'mnist'], \
             'Training MLPNet on {} is not supported'.format(cfg["TRAIN"]["DATASET"])
         super(CNN, self).__init__()
         self._construct(cfg)
@@ -209,8 +209,13 @@ class CNN(nn.Module):
         # Each stage has the same number of blocks for cifar
         dim_list = cfg["RGRAPH"]["DIM_LIST"]
         num_bs = cfg["MODEL"]["LAYERS"]// 3
+        
+        if(cfg["TRAIN"]["DATASET"] == 'cifar10'):
+            in_channels = 3
+        if(cfg["TRAIN"]["DATASET"] == 'mnist'):
+            in_channels = 1
 
-        self.s1 = CNNStem(cfg, dim_in=3, dim_out=cfg["RGRAPH"]["DIM_FIRST"])
+        self.s1 = CNNStem(cfg, dim_in=in_channels, dim_out=cfg["RGRAPH"]["DIM_FIRST"])
         self.s2 = CNNStage(cfg, dim_in=cfg["RGRAPH"]["DIM_FIRST"], dim_out=dim_list[0], stride=2, num_bs=num_bs)
         self.s3 = CNNStage(cfg, dim_in=dim_list[0], dim_out=dim_list[1], stride=2, num_bs=num_bs)
         self.s4 = CNNStage(cfg, dim_in=dim_list[1], dim_out=dim_list[2], stride=2, num_bs=num_bs)
