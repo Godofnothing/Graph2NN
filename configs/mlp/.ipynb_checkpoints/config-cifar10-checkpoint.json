@@ -7,8 +7,8 @@
         "LAYERS" : 3
     },
     "RGRAPH" : {
-        "DIM_FIRST" : 512, 
-        "DIM_LIST" : [512],
+        "DIM_FIRST" : 256, 
+        "DIM_LIST" : [256],
         "STEM_MODE" : "default",
         "TALK_MODE" : "dense",
         "GROUP_NUM" : 64, 
@@ -37,7 +37,6 @@
     "OPTIM" : {
         "BASE_LR" : 0.1,
         "LR_POLICY" : "cos",
-        "GAMMA" : 0.1,
         "STEP_SIZE" : 1,
         "STEPS" : [],
         "LR_MULT" : 0.1,
@@ -78,5 +77,5 @@
     "DATA_LOADER" : {
         "NUM_WORKERS" : 4
     },
-    "OUT_DIR" : "../tmp"
+    "OUT_DIR" : "results"
 }

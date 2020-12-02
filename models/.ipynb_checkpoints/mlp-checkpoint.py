@@ -228,7 +228,8 @@ class MLPNet(nn.Module):
         num_layers = cfg["MODEL"]["LAYERS"]
         dim_inner = cfg["RGRAPH"]["DIM_LIST"][0]
         dim_first = cfg["RGRAPH"]["DIM_FIRST"]
-        self.s1 = MLPStem(cfg, dim_in=3 * 28 * 28, dim_out=dim_first)
+        self.s1 = MLPStem(cfg, dim_in=3072, dim_out=dim_first)
+        #self.s1 = MLPStem(cfg, dim_in=3 * 28 * 28, dim_out=dim_first)
         self.s2 = MLPStage(cfg, dim_in=dim_first, dim_out=dim_inner, num_bs=num_layers)
         self.head = MLPHead(dim_in=dim_inner, num_classes=cfg["MODEL"]["NUM_CLASSES"])
         
