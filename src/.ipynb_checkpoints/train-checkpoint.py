@@ -80,8 +80,8 @@ def eval_epoch(test_loader, model, cfg, log = False, return_metrics = False):
     if cfg["RGRAPH"]["SAVE_GRAPH"]:
         adj_dict = net.model2adj(model)
         
-        out_dir = f"{cfg['OUT_DIR']}/{cfg['MODEL']['TYPE']}/{cfg['TRAIN']['DATASET']}/graphs"
         rgraph = cfg["RGRAPH"]
+        out_dir = f"{cfg['OUT_DIR']}/{cfg['MODEL']['TYPE']}/{cfg['TRAIN']['DATASET']}/graphs/{rgraph['GRAPH_TYPE']}"
         graph_name = f"gsparsity={rgraph['SPARSITY']}_p={rgraph['P']}_gseed={rgraph['SEED_GRAPH']}.npz"
         
         os.makedirs(f"{out_dir}", exist_ok=True)

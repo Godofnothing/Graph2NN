@@ -71,7 +71,7 @@ def run_on_param_grid(cfg, param_grid, log = False, return_metrics = True,  eval
                                                        evaluate_on_test=evaluate_on_test)
                 
                 if return_metrics:
-                    out_dir = f"{cfg['OUT_DIR']}/{cfg['MODEL']['TYPE']}/{cfg['TRAIN']['DATASET']}/logs"
+                    out_dir = f"{cfg['OUT_DIR']}/{cfg['MODEL']['TYPE']}/{cfg['TRAIN']['DATASET']}/logs/{cfg['RGRAPH']['GRAPH_TYPE']}"
                     out_file = f"log_gsparsity={sparsity}_p={p}_gseed={graph_seed}.txt"
                     os.makedirs(f"{out_dir}", exist_ok=True)
                     
